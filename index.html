@@ -20,8 +20,6 @@ a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,summary
 
 .share-overlay{position:fixed;inset:0;z-index:9999;background:#17251dcc;display:grid;place-items:center;padding:18px}.share-panel{width:min(100%,430px);background:#fff;border-radius:16px;padding:24px;box-shadow:0 20px 70px #0003;text-align:center}.share-panel h2{font-size:18px;margin:0 0 8px;color:var(--green)}.share-panel p{font-size:11px;line-height:1.8;color:var(--muted)}.share-url{padding:10px;background:#f5f7f1;border:1px solid var(--line);border-radius:7px;font-size:10px;overflow-wrap:anywhere;text-align:left;margin:14px 0}.qr-frame{display:flex;justify-content:center;align-items:center;min-height:230px;padding:12px;background:#fff}.qr-frame canvas,.qr-frame img{max-width:100%;height:auto!important}.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.share-actions .button{width:100%}.share-close{float:right;border:0;background:transparent;color:#667466;font-size:19px;padding:0 5px;cursor:pointer}.share-status{min-height:20px;font-size:10px;color:#7c765b;margin-top:9px}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 </head>
 <body>
@@ -30,12 +28,12 @@ a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,summary
 <main><header class="topbar"><span><i class="dot"></i> Nông nghiệp thông minh · Lâm Đồng</span><div style="display:flex;gap:8px;align-items:center"><button id="share-app" class="download" type="button">◇ Chia sẻ / QR</button><button id="download" class="download"><svg><use href="#upload"/></svg>Tải tệp HTML</button></div></header>
 
 <div id="share-modal" class="share-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="share-title"><div class="share-panel"><button id="close-share" class="share-close" type="button" aria-label="Đóng">×</button><h2 id="share-title">Chia sẻ AgriSmart Lâm Đồng</h2><p>Mã QR này dẫn tới địa chỉ website đang mở. Hãy triển khai ứng dụng lên Netlify trước khi tạo mã để người khác có thể truy cập.</p><div id="public-url" class="share-url">Chưa có đường dẫn công khai</div><div id="qr-code" class="qr-frame"><span style="font-size:11px;color:#92998c">Mã QR sẽ xuất hiện khi mở ứng dụng bằng đường dẫn HTTPS công khai.</span></div><div class="share-actions"><button id="copy-public-url" class="button" type="button">Sao chép đường link</button><button id="download-qr" class="button" type="button" disabled>Tải mã QR PNG</button></div><div id="share-status" class="share-status" role="status" aria-live="polite"></div></div></div>
-<section class="intro"><div><div class="eyebrow">TRỢ LÝ SỨC KHỎE CÂY TRỒNG</div><h1>Chăm cây từ <em>chiếc lá.</em></h1><p>Hiểu lá cà phê, chăm cây đúng cách.<br>Gợi ý thán thư, đốm mắt cua, gỉ sắt và lá khỏe từ ảnh cà phê.</p></div><div class="season">Đồng hành cùng nhà vườn</div></section>
+<section class="intro"><div><div class="eyebrow">TRỢ LÝ SỨC KHỎE CÂY TRỒNG</div><h1>Chăm cây từ <em>chiếc lá.</em></h1><p>Hiểu lá cà phê, chăm cây đúng cách.<br>Phân tích 7 nhóm: thán thư, đốm mắt cua, gỉ sắt, lá khỏe, nấm hồng, thối rễ tơ và lở cổ rễ.</p></div><div class="season">Đồng hành cùng nhà vườn</div></section>
 <section class="weather" aria-label="Dự báo thời tiết Lâm Đồng"><div class="location"><svg class="weather-icon" viewBox="0 0 48 48" fill="none"><circle cx="21" cy="20" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M21 3v5m0 24v5M4 20h5m24 0h5M9 8l4 4m17-4-4 4M8 32l5-5" stroke="currentColor" stroke-width="1.5"/><path d="M25 36h13a6 6 0 0 0 0-12 9 9 0 0 0-17 4 4 4 0 0 0 4 8Z" fill="#244d39" stroke="currentColor" stroke-width="1.5"/></svg><div><strong>Lâm Đồng, Việt Nam</strong><small id="weather-description">Đang tải dự báo nhiệt độ và độ ẩm…<br>Tổng hợp từ các khu vực đại diện trong tỉnh</small></div></div><div class="metric"><label>Nhiệt độ dự báo 24 giờ</label><strong><span id="temperature">—</span> <small>°C</small></strong></div><div class="metric"><label>Độ ẩm dự báo 24 giờ</label><strong><span id="humidity">—</span> <small>%</small></strong></div></section>
 <div class="weather-meta"><span id="weather-status" role="status">Dự báo tự động từ Open-Meteo · Lâm Đồng</span><button class="text-button" id="refresh-weather">↻ Cập nhật</button></div>
-<div class="workspace" id="diagnosis"><section class="card"><div class="card-head"><h2 class="section-title"><span class="number">01</span>Hình ảnh cây trồng</h2><span class="tag">PHÂN TÍCH BẰNG AI</span></div><div class="upload-body"><div class="dropzone" id="dropzone"><div class="empty-upload"><svg class="plant-art" viewBox="0 0 160 130" aria-hidden="true"><ellipse cx="80" cy="118" rx="52" ry="6" fill="#e9eede"/><path d="M79 112V45" stroke="#6b854b" stroke-width="3"/><path d="M79 82C40 88 31 60 30 45c30-2 48 12 49 37Z" fill="#ceddb1"/><path d="M80 65c-3-30 15-48 42-48 0 28-16 47-42 48Z" fill="#8aa566"/><path d="m80 83-32-23m32 5 28-34" stroke="#608044" stroke-width="1.5"/><path d="M19 36V20h17m89 0h17v16M19 91v16h17m89 0h17V91" fill="none" stroke="#b7c79f" stroke-width="1.5"/><circle cx="131" cy="70" r="3" fill="#c4d59f"/></svg><br><strong>Thêm ảnh lá cà phê cần kiểm tra</strong><p>Kéo thả ảnh vào đây hoặc chọn từ thiết bị</p><p>JPG, PNG, WebP · Tối đa 15 MB</p></div><img id="preview" alt="Ảnh cây trồng đã chọn để phân tích"></div><div class="file-name hidden" id="file-name"></div><div class="upload-actions"><label class="button file-picker" id="choose"><input type="file" id="file" accept="image/*" aria-label="Tải ảnh lên"><svg aria-hidden="true"><use href="#upload"/></svg>Tải ảnh lên</label><label class="button file-picker" id="take-photo"><input type="file" id="capture" accept="image/*" capture="environment" aria-label="Chụp ảnh"><svg aria-hidden="true"><use href="#camera"/></svg>Chụp ảnh</label></div><button class="button primary" id="analyze" disabled aria-disabled="true" title="Hãy tải ảnh lên và chờ mô hình AI kết nối"><svg><use href="#leaf"/></svg>Chẩn đoán cây trồng <span aria-hidden="true">→</span></button><p class="hint">ⓘ Chỉ dùng ảnh lá cà phê. Đặt một lá ở giữa khung hình, đủ sáng, rõ nét; chụp thêm mặt dưới khi cần.</p><p class="status" id="image-status" role="status" aria-live="polite"></p></div></section>
+<div class="workspace" id="diagnosis"><section class="card"><div class="card-head"><h2 class="section-title"><span class="number">01</span>Hình ảnh cây trồng</h2><span class="tag">PHÂN TÍCH BẰNG AI</span></div><div class="upload-body"><div class="dropzone" id="dropzone"><div class="empty-upload"><svg class="plant-art" viewBox="0 0 160 130" aria-hidden="true"><ellipse cx="80" cy="118" rx="52" ry="6" fill="#e9eede"/><path d="M79 112V45" stroke="#6b854b" stroke-width="3"/><path d="M79 82C40 88 31 60 30 45c30-2 48 12 49 37Z" fill="#ceddb1"/><path d="M80 65c-3-30 15-48 42-48 0 28-16 47-42 48Z" fill="#8aa566"/><path d="m80 83-32-23m32 5 28-34" stroke="#608044" stroke-width="1.5"/><path d="M19 36V20h17m89 0h17v16M19 91v16h17m89 0h17V91" fill="none" stroke="#b7c79f" stroke-width="1.5"/><circle cx="131" cy="70" r="3" fill="#c4d59f"/></svg><br><strong>Thêm ảnh bộ phận cây cà phê cần kiểm tra</strong><p>Kéo thả ảnh vào đây hoặc chọn từ thiết bị</p><p>JPG, PNG, WebP · Tối đa 15 MB</p></div><img id="preview" alt="Ảnh cây trồng đã chọn để phân tích"></div><div class="file-name hidden" id="file-name"></div><div class="upload-actions"><label class="button file-picker" id="choose"><input type="file" id="file" accept="image/*" aria-label="Tải ảnh lên"><svg aria-hidden="true"><use href="#upload"/></svg>Tải ảnh lên</label><label class="button file-picker" id="take-photo"><input type="file" id="capture" accept="image/*" capture="environment" aria-label="Chụp ảnh"><svg aria-hidden="true"><use href="#camera"/></svg>Chụp ảnh</label></div><button class="button primary" id="analyze" disabled aria-disabled="true" title="Hãy tải ảnh lên và chờ mô hình AI kết nối"><svg><use href="#leaf"/></svg>Chẩn đoán cây trồng <span aria-hidden="true">→</span></button><p class="hint">ⓘ Chọn ảnh đúng bộ phận cần kiểm tra: hai mặt lá, cành có vết bất thường hoặc vùng cổ rễ/rễ đã được bộc lộ an toàn. Ảnh đủ sáng, rõ nét; ảnh lá không xác nhận được bệnh ở rễ/cổ rễ.</p><p class="status" id="image-status" role="status" aria-live="polite"></p></div></section>
 <section class="card"><div class="card-head"><h2 class="section-title"><span class="number">02</span>Bảng kết quả chẩn đoán</h2><span class="tag" id="result-tag">CHỜ HÌNH ẢNH</span></div><div class="result-body"><div id="empty-result" class="empty-result"><svg class="scan-icon"><use href="#leaf"/></svg><strong>Lắng nghe điều chiếc lá muốn nói</strong><p>Tải ảnh và chọn “Chẩn đoán cây trồng” để xem kết quả phân tích tại đây.</p></div><div id="results" class="hidden" aria-live="polite"><div class="result-summary"><small>LỚP MÔ HÌNH XẾP CAO NHẤT</small><h3 id="disease"></h3><div class="confidence"><span>Điểm phân loại (không phải xác suất mắc bệnh)</span><strong id="confidence"></strong></div><div class="bar" id="confidence-bar" role="progressbar" aria-label="Độ tin cậy" aria-valuemin="0" aria-valuemax="100"><span></span></div></div><div class="recommendation"><h4>Diễn giải kết quả</h4><div id="diagnosis-details"></div></div><table><thead><tr><th>Tình trạng lá cà phê</th><th>Điểm mô hình</th></tr></thead><tbody id="probabilities"></tbody></table><div class="recommendation"><h4>Kiểm tra thực tế trên cây / lá</h4><p>Quan sát cả hai mặt lá: đốm vàng hoặc nâu, lớp bột màu cam, vết cháy mép, lỗ thủng và côn trùng. Ghi lại vị trí xuất hiện trên lá non hay lá già.</p><p>Chụp thêm toàn cây và mặt dưới lá; theo dõi vết bệnh có lan rộng, lá có rụng hoặc cành có héo. Đây là các bước cần đối chiếu ngoài ảnh, không phải triệu chứng AI đã phát hiện.</p></div><div class="recommendation"><h4>Gợi ý chăm sóc theo thời tiết</h4><div id="recommendations"></div></div></div><div class="notice"><strong>Lưu ý nhà vườn:</strong> Kết quả AI mang tính tham khảo, không thay thế đánh giá của cán bộ kỹ thuật nông nghiệp. Xác minh bệnh trước khi sử dụng thuốc bảo vệ thực vật.</div></div></section></div>
-<details class="model" id="model-settings"><summary>Kết nối mô hình Teachable Machine <span class="model-state" id="model-state">CHƯA KẾT NỐI</span></summary><p>Đường dẫn mô hình cần chứa model.json, metadata.json và các tệp trọng số công khai. Ứng dụng đọc tên lớp trực tiếp từ mô hình. Nếu mô hình dùng nhãn Class 1, Class 2…, ứng dụng đang dùng quy ước Class 1 = thán thư; Class 2 = đốm mắt cua; Class 3 = gỉ sắt; Class 4 = lá khỏe như trong mã dự án. Bạn cần xác nhận thứ tự lớp này trùng với thứ tự đã huấn luyện trong Teachable Machine; nếu khác, không dùng phần tư vấn bệnh tương ứng cho đến khi sửa bảng ghép.</p><div class="model-row"><input id="model-url" type="url" value="https://teachablemachine.withgoogle.com/models/bP3vftGDQ/" aria-label="URL mô hình Teachable Machine" placeholder="https://teachablemachine.withgoogle.com/models/…/"><button id="connect" class="button">Kết nối mô hình</button></div><p class="status" role="status" id="model-status">Đang tải mô hình từ URL được cung cấp…</p></details>
+<details class="model" id="model-settings"><summary>Kết nối mô hình Teachable Machine <span class="model-state" id="model-state">CHƯA KẾT NỐI</span></summary><p><strong>Giới hạn khoa học:</strong> kết quả hiện là phân loại ảnh 7 lớp. Chưa có số liệu kiểm định độc lập, hiệu chuẩn xác suất, phát hiện vùng tổn thương hoặc đánh giá mức độ bệnh. Muốn công bố độ chính xác cần kiểm tra trên ảnh mới, không trùng tập huấn luyện, có nhãn do người có chuyên môn xác nhận.</p><p>Đường dẫn mô hình cần chứa model.json, metadata.json và các tệp trọng số công khai. Ứng dụng đọc tên lớp trực tiếp từ mô hình. Nếu mô hình dùng nhãn Class 1, Class 2…, ứng dụng đang dùng quy ước Class 1 = thán thư; Class 2 = đốm mắt cua; Class 3 = gỉ sắt; Class 4 = lá khỏe; Class 5 = nấm hồng; Class 6 = thối rễ tơ; Class 7 = lở cổ rễ. Bạn cần xác nhận thứ tự lớp này trùng với thứ tự đã huấn luyện trong Teachable Machine; nếu khác, không dùng phần tư vấn bệnh tương ứng cho đến khi sửa bảng ghép.</p><div class="model-row"><input id="model-url" type="url" value="https://teachablemachine.withgoogle.com/models/bP3vftGDQ/" aria-label="URL mô hình Teachable Machine" placeholder="https://teachablemachine.withgoogle.com/models/…/"><button id="connect" class="button">Kết nối mô hình</button></div><p class="status" role="status" id="model-status">Đang tải mô hình từ URL được cung cấp…</p></details>
 <section class="guide"><div class="guide-mark">↗</div><div><h3>Một bức ảnh tốt, một khởi đầu chính xác.</h3><p>Chụp cả mặt trên và mặt dưới của lá khi cần. Tránh ánh sáng gắt và phông nền nhiều chi tiết.<br>Ảnh chỉ được xử lý trên thiết bị của bạn, không được gửi lên máy chủ.</p></div></section><footer><span>© <span id="year"></span> AgriSmart Lâm Đồng · Vì những mùa xanh</span><span>TensorFlow.js & Teachable Machine · Thời tiết từ Open-Meteo</span></footer>
 </main></div>
 <script>
@@ -47,6 +45,10 @@ const COFFEE_MODEL_URL='https://teachablemachine.withgoogle.com/models/bP3vftGDQ
 const coffeeProfiles={
  'Class 1':{
   name:'Bệnh thán thư',
+  pathogen:'Thường liên quan các loài nấm thuộc chi Colletotrichum. Ảnh không xác định được loài nấm hoặc chứng minh tác nhân; cần đối chiếu triệu chứng và, khi cần, kiểm tra mẫu.',
+  affected:'Lá, chồi, cành, hoa và quả; trên cà phê có thể liên quan hiện tượng khô cành, khô quả.',
+  impact:'Tổn thương lan rộng có thể làm mô lá hoại tử, cành khô, quả non hư hại hoặc rụng; thiệt hại tùy giống, tuổi cây, sức cây và mức độ bệnh.',
+  differential:['Đốm mắt cua thường có tâm xám/nâu nhạt, viền sẫm và quầng vàng rõ hơn.','Cháy nắng hoặc tổn thương cơ học thường liên quan vị trí phơi nắng/va chạm, không nhất thiết lan như bệnh truyền nhiễm.','Các bệnh đốm lá khác cần được phân biệt bằng hình thái vết bệnh và kiểm tra hai mặt lá.'],
   overview:'Mô hình đang xếp ảnh gần với nhóm thán thư. Đây là dấu hiệu gợi ý để kiểm tra ngoài vườn, chưa phải kết luận tác nhân gây bệnh.',
   visual:['Vết nâu sẫm đến đen, có thể không đều, thường xuất hiện ở mép hoặc chóp lá và có xu hướng lan rộng.','Khi nặng, mô lá khô hoại tử; cần kiểm tra thêm cành non, cành khô và quả nếu có.'],
   verify:['Quan sát cả mặt trên và mặt dưới lá; xem vết có ranh giới rõ, tâm khô hay lan từ mép lá.','Kiểm tra nhiều lá ở cùng cành và các cây bên cạnh, không chỉ một lá riêng lẻ.','Ghi nhận vườn có mưa tạt, tán rậm, lá thường xuyên ướt hoặc cành bị tổn thương hay không.'],
@@ -59,6 +61,10 @@ const coffeeProfiles={
  },
  'Class 2':{
   name:'Bệnh đốm mắt cua',
+  pathogen:'Thường liên quan nấm Cercospora coffeicola. Ảnh không đủ để xác nhận tác nhân ở cấp loài.',
+  affected:'Chủ yếu trên lá; bệnh cũng có thể biểu hiện trên quả xanh và quả chín.',
+  impact:'Nhiều vết bệnh có thể làm vàng, rụng lá; tổn thương trên quả có thể ảnh hưởng sự phát triển và chất lượng quả.',
+  differential:['Thán thư có thể tạo vết lớn, bất định, hoại tử và lan từ mép/chóp lá.','Gỉ sắt cần có ổ bột vàng cam ở mặt dưới lá.','Cháy nắng hoặc tổn thương hóa học cần được đối chiếu với lịch sử chăm sóc và vị trí vết.'],
   overview:'Mô hình đang xếp ảnh gần với nhóm đốm mắt cua. Cần xác nhận hình dạng đốm và tình trạng cây trước khi chọn biện pháp xử lý.',
   visual:['Đốm thường tròn hoặc gần tròn, tâm xám/nâu nhạt, viền nâu sẫm; đôi khi có quầng vàng bao quanh giống hình mắt cua.','Nhiều đốm có thể làm lá vàng, giảm diện tích lá xanh và rụng; cần kiểm tra cả quả nếu có.'],
   verify:['Chụp rõ đốm ở khoảng cách gần để thấy tâm, viền và quầng vàng; chụp cả mặt dưới lá.','So sánh lá non và lá già; kiểm tra nhiều tầng tán và nhiều cây trong cùng lô.','Kiểm tra độ che bóng, độ ẩm đất, thoát nước và tình trạng dinh dưỡng; ghi lại vị trí đốm trên quả nếu có.'],
@@ -71,6 +77,10 @@ const coffeeProfiles={
  },
  'Class 3':{
   name:'Bệnh gỉ sắt',
+  pathogen:'Do nấm Hemileia vastatrix gây ra. Dấu hiệu xác minh quan trọng là ổ bào tử dạng bột vàng cam ở mặt dưới lá.',
+  affected:'Chủ yếu trên lá cà phê; bệnh nặng có thể làm rụng lá và kéo theo suy yếu cành.',
+  impact:'Mất diện tích lá xanh làm giảm quang hợp, cây suy yếu, rụng lá và có thể giảm năng suất nếu bệnh nặng, kéo dài.',
+  differential:['Thiếu dinh dưỡng có thể gây vàng lá nhưng không tạo ổ bột vàng cam ở mặt dưới.','Đốm mắt cua tạo vết hoại tử tròn với tâm xám/nâu và viền sẫm, không có bột cam đặc trưng.'],
   overview:'Mô hình đang xếp ảnh gần với nhóm gỉ sắt. Dấu hiệu quan trọng cần xác minh là ổ bột vàng cam ở mặt dưới lá, không chỉ là vùng vàng ở mặt trên.',
   visual:['Mặt trên lá thường có vùng/chấm vàng nhạt tương ứng với ổ bệnh.','Mặt dưới lá có thể xuất hiện ổ bột màu vàng cam hoặc da cam; đây là dấu hiệu cần kiểm tra trực tiếp.','Khi bệnh nặng, lá có thể vàng và rụng, làm tán thưa và cây suy yếu.'],
   verify:['Lật lá và quan sát mặt dưới dưới ánh sáng tự nhiên; tìm ổ bột vàng cam.','Kiểm tra xem vùng vàng ở mặt trên có nằm đối diện vị trí ổ bột ở mặt dưới hay không.','Quan sát nhiều lá ở các tầng tán và một số cây lân cận; ghi nhận tỷ lệ lá có ổ bột.'],
@@ -83,6 +93,10 @@ const coffeeProfiles={
  },
  'Class 4':{
   name:'Lá cà phê khỏe mạnh, bình thường',
+  pathogen:'Không áp dụng: đây là lớp trạng thái lá nhìn thấy trong ảnh, không phải chẩn đoán toàn bộ cây.',
+  affected:'Ảnh hiện tại chưa cho thấy dấu hiệu rõ thuộc các nhóm bệnh trong mô hình; rễ, cổ rễ, cành, quả và tổn thương giai đoạn sớm vẫn có thể có vấn đề.',
+  impact:'Không được hiểu kết quả này là cây chắc chắn khỏe hoặc không có sâu bệnh; mô hình chỉ phân loại trong 7 lớp đã huấn luyện.',
+  differential:['Thiếu/thừa dinh dưỡng, hạn/úng, tổn thương rễ, sâu hại hoặc bệnh ngoài 7 lớp có thể chưa được nhận diện.'],
   overview:'Mô hình đang ưu tiên nhóm lá khỏe trong các lớp nó đã được huấn luyện. Kết quả này không loại trừ bệnh giai đoạn sớm hay vấn đề không có trong bộ dữ liệu.',
   visual:['Lá có màu tương đối đồng đều, không thấy rõ vùng hoại tử, đốm bất thường hoặc ổ bột cam.','Một ảnh tốt vẫn có thể bỏ sót tổn thương nhỏ, sâu hại ở mặt dưới, vấn đề rễ hoặc dấu hiệu trên cành/quả.'],
   verify:['Lật mặt dưới lá, kiểm tra gân lá, mép lá và cuống; xem có côn trùng, ổ bột hoặc đốm nhỏ không.','Quan sát thêm lá non, lá già, cành và toàn cây; so sánh với cây cùng giống và cùng lô.','Kiểm tra độ ẩm đất, thoát nước, màu sắc lá và mức sinh trưởng thay vì chỉ dựa vào một ảnh.'],
@@ -92,7 +106,54 @@ const coffeeProfiles={
   escalate:'Nhờ cán bộ kỹ thuật đánh giá nếu cây héo, vàng đồng loạt, rụng lá bất thường, sinh trưởng kém hoặc có dấu hiệu ở rễ/thân dù ảnh lá được xếp khỏe.',
   avoid:'Không xem “lá khỏe” là giấy xác nhận toàn cây khỏe. Không bỏ qua triệu chứng ngoài khung ảnh hoặc trên các bộ phận khác của cây.',
   weather:'Duy trì chăm sóc theo độ ẩm đất và thoát nước thực tế; thời tiết khu vực chỉ giúp tham khảo, không thay thế kiểm tra tại gốc và trong tán.'
- }
+ },
+ 'Class 5':{
+  name:'Bệnh nấm hồng',
+  pathogen:'Tài liệu kỹ thuật cà phê tại Lâm Đồng ghi nhận tác nhân là nấm Corticium salmonicolor. Ảnh chỉ gợi ý; xác nhận tác nhân cần kiểm tra mô bệnh và chuyên môn phù hợp.',
+  affected:'Chủ yếu trên cành, nhánh và vùng phân cành; thường đáng chú ý ở phần tán có điều kiện ẩm, rậm.',
+  impact:'Vết bệnh phát triển quanh cành có thể làm vỏ nứt, mô cành suy yếu, cành phía ngoài khô chết; nếu nhiều cành bị ảnh hưởng, tán và khả năng mang quả suy giảm.',
+  visual:['Trên vỏ cành có lớp tơ/màng nấm màu trắng hồng hoặc hồng nhạt; giai đoạn cũ có thể chuyển trắng xám.','Vỏ cành tại vùng bệnh có thể nứt, bong hoặc khô; phần cành phía ngoài vết bệnh có thể héo và chết.','Dấu hiệu cần xem trực tiếp trên cành; ảnh lá đơn lẻ không đủ để nhận diện chắc chắn nấm hồng.'],
+  verify:['Chụp toàn cành để xác định vị trí vết bệnh trong tán, sau đó chụp cận cảnh vùng vỏ có màu hồng/trắng xám.','Kiểm tra vùng phân cành và các cành lân cận; ghi nhận vết bệnh có bao quanh cành hay không.','Đối chiếu xem cành phía ngoài vùng tổn thương có héo, khô hoặc chết ngọn không.'],
+  factors:['Bệnh thường phát sinh thuận lợi trong thời kỳ mưa ẩm và ở tán rậm, thông thoáng kém.','Cành giao nhau, vết thương và độ ẩm lưu lại lâu trên vỏ có thể làm tăng nguy cơ.','Mốc bề mặt, địa y hoặc tổn thương vỏ khác có thể bị nhầm nếu ảnh thiếu rõ nét.'],
+  differential:['Nứt vỏ do cơ học hoặc nắng không nhất thiết có lớp tơ/màng hồng đặc trưng.','Địa y/mốc bề mặt cần được phân biệt bằng cấu trúc, ranh giới vết bệnh và tình trạng mô cành bên dưới.','Khô cành do thán thư hoặc nguyên nhân sinh lý cần kiểm tra sự hiện diện của lớp nấm trên vỏ.'],
+  actions:['Đánh dấu cành nghi bệnh và chụp ảnh rõ trước khi can thiệp.','Nhờ cán bộ kỹ thuật xác minh khi có mảng hồng trên vỏ hoặc cành bắt đầu khô; tránh cạo/bóc vỏ tùy tiện.','Giữ tán thông thoáng bằng quản lý cành hợp lý; tỉa vệ sinh trong điều kiện khô ráo và thu gom vật liệu bệnh theo hướng dẫn địa phương.','Kiểm tra các cành giao nhau và vị trí trong tán lâu khô sau mưa.','Chỉ quyết định biện pháp bảo vệ thực vật sau khi xác minh bệnh và theo hướng dẫn chuyên môn, nhãn sản phẩm được phép.'],
+  follow:'Đánh dấu vị trí vết bệnh, chụp lại sau 5–7 ngày trong điều kiện ánh sáng tương tự; theo dõi ranh giới vết bệnh, tình trạng vỏ và phần cành phía ngoài có tiếp tục héo khô hay không.',
+  escalate:'Cần kiểm tra trực tiếp sớm nếu vết bệnh bao quanh cành, nhiều cành cùng bị, cành mang quả chết hoặc bệnh lan rộng trong tán.',
+  avoid:'Không kết luận nấm hồng từ lá vàng đơn thuần. Không bóc vỏ hoặc cắt cành lớn khi chưa đánh giá vị trí, mức độ và nguy cơ ảnh hưởng tán.',
+  weather:'Thời kỳ mưa ẩm và tán lâu khô làm tăng nhu cầu kiểm tra cành, nhất là vùng phân cành và phần tán rậm. Dự báo thời tiết khu vực không thay thế quan sát tại vườn.'
+ },
+ 'Class 6':{
+  name:'Bệnh thối rễ tơ',
+  pathogen:'Tài liệu kỹ thuật cà phê tại Lâm Đồng ghi nhận nhóm tác nhân Rhizoctonia sp. và Fusarium sp.; vàng lá, thối rễ cũng có thể liên quan tuyến trùng hoặc nhiều nguyên nhân phối hợp. Không thể xác định tác nhân chỉ bằng ảnh lá.',
+  affected:'Hệ rễ hút, đặc biệt rễ tơ; cây có thể biểu hiện trên tán lá do giảm khả năng hút nước và dinh dưỡng.',
+  impact:'Rễ hút suy giảm làm cây sinh trưởng chậm, vàng lá, ít cành thứ cấp, suy kiệt; trường hợp nặng có thể chết cây và tạo khoảng trống trong vườn.',
+  photoLimit:'Đây là bệnh vùng rễ. Ảnh lá chỉ cho thấy dấu hiệu gián tiếp và không xác nhận thối rễ tơ. Cần kiểm tra trực tiếp vùng rễ hoặc mẫu rễ được lấy đúng cách; không tự đào sâu làm đứt rễ.',
+  visual:['Trên tán: cây sinh trưởng chậm, lá vàng/nhạt màu, tán thưa, ít cành thứ cấp; các biểu hiện này không đặc hiệu.','Khi kiểm tra vùng rễ: rễ tơ có thể thâm nâu/đen, giảm số lượng, mềm hoặc hoại tử; cần so sánh với rễ khỏe cùng cây/đất.','Một cây có thể đồng thời chịu úng, tổn thương rễ, tuyến trùng hoặc mất cân đối dinh dưỡng; không quy mọi vàng lá cho nấm.'],
+  verify:['Quan sát phân bố: một cây riêng lẻ, từng cụm hay cả lô; ghi lại tuổi cây và vị trí địa hình.','Kiểm tra độ ẩm đất, tình trạng đọng nước, tầng đất nén chặt và lịch sử tưới.','Nếu cần lấy mẫu rễ/đất, nhờ cán bộ kỹ thuật hướng dẫn lấy mẫu đại diện để kiểm tra tác nhân và tuyến trùng.','Đối chiếu với vàng lá do thiếu dinh dưỡng, úng, hạn, tuyến trùng và tổn thương cơ giới.'],
+  factors:['Đất úng hoặc thoát nước kém làm rễ thiếu oxy và dễ suy yếu; đất nén chặt, rễ bị tổn thương và nguồn bệnh trong đất cũng có thể liên quan.','Quy trình kỹ thuật cà phê tại Lâm Đồng nêu Rhizoctonia sp. và Fusarium sp.; tác nhân thực tế cần xác minh theo mẫu.','Không thể suy ra loại nấm, mức độ nhiễm hoặc phạm vi rễ hư hại từ điểm AI.'],
+  differential:['Úng nước: đất ẩm kéo dài, rễ thiếu oxy; cần kiểm tra hệ thống thoát nước.','Hạn hoặc tưới không đều: cây héo/vàng nhưng rễ có thể chưa bị thối.','Tuyến trùng: có thể gây tổn thương rễ và vàng lá; cần kiểm tra mẫu rễ/đất.','Thiếu dinh dưỡng: cần đối chiếu kiểu phân bố vàng lá và kết quả phân tích đất/lá khi cần.'],
+  actions:['Ưu tiên kiểm tra thoát nước và độ ẩm đất thực tế; không tưới thêm chỉ vì lá vàng.','Tránh xới sâu, cuốc sát gốc hoặc làm đứt rễ ở cây đang suy yếu.','Không để nước chảy tràn từ khu vực nghi bệnh sang khu vực khác; rà soát đường thoát nước và vùng trũng.','Duy trì dinh dưỡng cân đối và vật liệu hữu cơ hoai mục theo quy trình canh tác địa phương; không bón dồn để “chữa” rễ.','Cây suy nặng hoặc nhiều cây thành cụm cần cán bộ kỹ thuật kiểm tra rễ, đất và tuyến trùng trước khi chọn biện pháp quản lý.'],
+  follow:'Đánh dấu cây, ghi mức vàng lá, độ ẩm đất và tình trạng tán mỗi 5–7 ngày; theo dõi cây có ra rễ tơ mới, phục hồi sinh trưởng hay tiếp tục suy giảm. Ghi riêng các cây trong vùng trũng.',
+  escalate:'Cần kiểm tra chuyên môn nếu nhiều cây vàng lá/sinh trưởng chậm theo cụm, cây dễ nghiêng, rễ tơ thối rõ hoặc cây suy kiệt dù đã điều chỉnh tưới và thoát nước.',
+  avoid:'Không chẩn đoán thối rễ chỉ từ lá vàng. Không tự ý phối trộn sản phẩm hoặc tăng phân; không đào bới mạnh quanh gốc để tìm rễ.',
+  weather:'Mưa kéo dài có thể làm đất bão hòa, nhất là vùng trũng; cần kết hợp dự báo mưa với kiểm tra độ ẩm đất và khả năng thoát nước tại từng lô. Độ ẩm không khí không đại diện cho độ ẩm vùng rễ.'
+ },
+ 'Class 7':{
+  name:'Bệnh lở cổ rễ',
+  pathogen:'Tài liệu kỹ thuật cà phê ghi nhận Rhizoctonia solani; một số quy trình canh tác nêu thêm Fusarium spp. và Pythium spp. Tác nhân có thể khác theo tuổi cây, đất và điều kiện vườn; ảnh không đủ để định danh.',
+  affected:'Vùng cổ rễ – phần thân tiếp giáp với rễ cọc và phần rễ gần gốc; tài liệu kỹ thuật Lâm Đồng mô tả vết khuyết có thể xuất hiện ở vùng cổ rễ khoảng 20–30 cm tính từ mặt đất. Thường đáng chú ý ở cây con, vườn ươm và cây giai đoạn kiến thiết cơ bản.',
+  impact:'Tổn thương làm mô cổ rễ thâm đen, khuyết/thắt hoặc thối; khi nặng có thể cản trở vận chuyển nước, khiến cây héo, đổ/ngã và chết.',
+  photoLimit:'Đây là bệnh tại cổ rễ. Ảnh lá không đủ xác nhận. Cần ảnh rõ phần gốc sát mặt đất và kiểm tra trực tiếp; không cạo hoặc bóc mô cây để “thử bệnh”.',
+  visual:['Vùng cổ rễ sát mặt đất có thể xuất hiện vết thâm nâu/đen, mô khô hoặc thối, lõm/khuyết và thắt lại.','Cây con có thể héo rũ, nghiêng hoặc ngã; cây lớn có thể vàng lá, sinh trưởng chậm và suy yếu.','Triệu chứng lá vàng không đặc hiệu; dấu hiệu cần quan sát ở cổ rễ, không chỉ trên phiến lá.'],
+  verify:['Chụp toàn cây và cận cảnh gốc sát mặt đất, có vật chuẩn kích thước đặt cạnh nhưng không che vết bệnh.','Quan sát ranh giới vùng mô đổi màu, vị trí vết so với mặt đất và tình trạng cây có bị thắt/nghiêng hay không.','Kiểm tra độ ẩm, độ thoáng của bầu/đất, mật độ cây và cỏ dại quanh gốc.','Phân biệt với tổn thương do cuốc/xén cỏ, nứt cơ học, úng gốc hoặc bệnh thối rễ khác.'],
+  factors:['Độ ẩm đất cao, thoát nước kém, bầu đất bí chặt và vườn ươm thiếu thông thoáng có thể làm bệnh phát sinh thuận lợi.','Vết thương ở gốc và thao tác làm cỏ sát cổ rễ có thể làm mô dễ bị tổn thương.','Tác nhân nấm/oomycete cần được xác minh; không thể xác định chỉ bằng màu vết bệnh.'],
+  differential:['Thối rễ tơ: tổn thương chủ yếu ở hệ rễ hút; cổ rễ có thể chưa có vết thắt rõ.','Tổn thương cơ học: thường có dấu vết va chạm/cắt xén và liên hệ với thao tác canh tác.','Úng gốc: cây héo/vàng khi đất bão hòa; cần xem có vết hoại tử cổ rễ đặc trưng hay không.'],
+  actions:['Cải thiện thoát nước và thông thoáng khu vực gốc/bầu ươm; tránh tưới quá nhiều làm đất luôn bão hòa.','Hạn chế làm cỏ, xới đất hoặc vun lấp gây tổn thương và che kín cổ rễ.','Theo dõi, đánh dấu cây nghi bệnh; cây bị tổn thương nặng cần cán bộ kỹ thuật đánh giá để quyết định cách xử lý và vệ sinh khu vực.','Chọn cây giống khỏe, giá thể/đất tơi xốp, thoát nước và vệ sinh dụng cụ, khay/bầu ươm theo quy trình.','Không tự chọn thuốc hoặc xử lý hóa học chỉ dựa trên kết quả ảnh; cần xác minh tác nhân và tham khảo hướng dẫn địa phương.'],
+  follow:'Ghi số cây có vết ở cổ rễ, mức độ héo/nghiêng và tình trạng đất mỗi 3–5 ngày; chụp lại cùng góc, không bóc mô để so sánh.',
+  escalate:'Cần cán bộ kỹ thuật kiểm tra sớm nếu vết lở/thắt lan quanh cổ rễ, cây con héo rũ/ngã, nhiều cây trong bầu ươm bị cùng lúc hoặc cây lớn vàng héo nhanh.',
+  avoid:'Không nhầm lẫn lở cổ rễ với vàng lá do thiếu dinh dưỡng. Không vun đất che kín vết bệnh, cạo vỏ hoặc tự xử lý sản phẩm khi chưa được hướng dẫn.',
+  weather:'Mưa nhiều và đất ẩm kéo dài làm tăng nhu cầu kiểm tra cổ rễ và thoát nước, đặc biệt ở vườn ươm/vùng trũng. Dữ liệu dự báo tỉnh không thay thế quan sát độ ẩm tại gốc.'
+ },
 };
 let selectionVersion=0, modelUsesDeclaredClassOrder=false;
 function normalizeLabel(label){
@@ -103,17 +164,48 @@ function profileFor(label){
  const value=normalizeLabel(raw);
  // The supplied model uses generic labels; apply the user's confirmed order only to this model.
  if(modelUsesDeclaredClassOrder){
-  const match=raw.match(/^class\s*([1-4])$/i);
+  const match=raw.match(/^class\s*([1-7])$/i);
   if(match)return coffeeProfiles['Class '+match[1]];
  }
  if(value.includes('than thu')||value.includes('anthracnose'))return coffeeProfiles['Class 1'];
  if(value.includes('dom mat cua')||value.includes('cercospora')||value.includes('eye spot')||value.includes('eyespot'))return coffeeProfiles['Class 2'];
  if(value.includes('gi sat')||value.includes('rust')||value.includes('hemileia'))return coffeeProfiles['Class 3'];
  if(value.includes('khoe')||value.includes('healthy')||value.includes('normal')||value.includes('binh thuong'))return coffeeProfiles['Class 4'];
+ if(value.includes('nam hong')||value.includes('pink disease')||value.includes('corticium'))return coffeeProfiles['Class 5'];
+ if(value.includes('thoi re to')||value.includes('fine root rot')||value.includes('rhizoctonia')||value.includes('fusarium'))return coffeeProfiles['Class 6'];
+ if(value.includes('lo co re')||value.includes('collar rot')||value.includes('damping off'))return coffeeProfiles['Class 7'];
  return null;
 }
 function labelFor(label){return profileFor(label)?.name||label;}
 function uncertain(predictions){return predictions[0].probability<.7||(predictions[1]&&predictions[0].probability-predictions[1].probability<.15);}
+
+function loadScriptOnce(url,timeoutMs=18000){
+ return new Promise((resolve,reject)=>{
+  const existing=[...document.scripts].find(script=>script.src===url);
+  if(existing&&existing.dataset.loaded==='true'){resolve();return;}
+  const script=existing||document.createElement('script');let settled=false;
+  const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=null;script.onerror=null;if(error){script.remove();reject(error);}else{script.dataset.loaded='true';resolve();}};
+  const timer=setTimeout(()=>finish(Error('Quá thời gian tải thư viện AI.')),timeoutMs);
+  script.onload=()=>finish();script.onerror=()=>finish(Error('CDN không tải được thư viện.'));
+  if(!existing){script.src=url;script.async=true;document.head.appendChild(script);}
+ });
+}
+async function ensureAiLibraries(){
+ if(!window.tf){
+  let err;
+  for(const url of ['https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js','https://unpkg.com/@tensorflow/tfjs@3.21.0/dist/tf.min.js']){
+   try{await loadScriptOnce(url);if(window.tf)break;}catch(e){err=e;}
+  }
+  if(!window.tf)throw Error('Không tải được TensorFlow.js. Kiểm tra Internet hoặc thử Chrome/Edge. '+(err?.message||''));
+ }
+ if(!window.tmImage){
+  let err;
+  for(const url of ['https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js','https://unpkg.com/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js']){
+   try{await loadScriptOnce(url);if(window.tmImage)break;}catch(e){err=e;}
+  }
+  if(!window.tmImage)throw Error('Không tải được thư viện Teachable Machine. '+(err?.message||''));
+ }
+}
 
 let model=null, imageReady=false, objectURL=null, weather=null, lastPredictions=null, busy=false, connecting=false, weatherController=null;
 $('year').textContent=new Date().getFullYear();
@@ -130,30 +222,41 @@ async function connectModel(){
  if(connecting||busy)return;
  connecting=true; model=null;modelUsesDeclaredClassOrder=false;clearResults();updateAnalyze();$('connect').disabled=true;$('model-state').textContent='ĐANG KẾT NỐI';$('model-status').textContent='Đang tải mô hình và trọng số…';
  try{
-  if(!window.tf||!window.tmImage)throw Error('Không tải được thư viện AI. Kiểm tra kết nối Internet rồi tải lại trang.');
+  $('model-status').textContent='Bước 1/4: Đang tải thư viện AI…';
+  await ensureAiLibraries();
+  if(!window.tf||!window.tmImage)throw Error('Thư viện AI chưa sẵn sàng.');
   const url=new URL($('model-url').value.trim());if(url.protocol!=='https:')throw Error('Vui lòng dùng URL HTTPS công khai của mô hình.');
   if(url.search||url.hash)throw Error('Vui lòng dùng URL thư mục mô hình, không có tham số hoặc dấu #.');
   const base=url.href.replace(/\/+$/,'')+'/';
-  // Validate the metadata with a timeout before asking the library to load weights.
-  const controller=new AbortController();
-   const timeout=setTimeout(()=>controller.abort(),15000);
-   let response;
-   try{response=await fetch(base+'metadata.json',{signal:controller.signal});}
-   finally{clearTimeout(timeout);}
-  if(!response.ok)throw Error('Không tìm thấy metadata.json tại URL này.');
-  const metadata=await response.json();
-  if(!Array.isArray(metadata.labels)||metadata.labels.length!==4)throw Error('Mô hình này cần có đúng 4 lớp như bộ dữ liệu AgriSmart.');
-  const expectedLabels=['Class 1','Class 2','Class 3','Class 4'];
+  $('model-status').textContent='Bước 2/4: Đang kiểm tra metadata.json…';
+  const getJson=async file=>{
+   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
+   try{
+    const response=await fetch(base+file,{signal:controller.signal,cache:'no-store',mode:'cors'});
+    if(!response.ok)throw Error(file+' trả về HTTP '+response.status+'.');
+    return await response.json();
+   }catch(error){
+    if(error.name==='AbortError')throw Error('Hết thời gian chờ khi tải '+file+'.');
+    if(error instanceof TypeError)throw Error('Không truy cập được '+file+' (có thể do mạng, CORS hoặc quyền công khai).');
+    throw error;
+   }finally{clearTimeout(timeout);}
+  };
+  const metadata=await getJson('metadata.json');
+  if(!Array.isArray(metadata.labels)||metadata.labels.length!==7)throw Error('Mô hình AgriSmart cần có đúng 7 lớp theo thứ tự đã xác nhận.');
+  const expectedLabels=['Class 1','Class 2','Class 3','Class 4','Class 5','Class 6','Class 7'];
   const isConfirmedModel=base===COFFEE_MODEL_URL;
   if(isConfirmedModel&&!expectedLabels.every((label,index)=>String(metadata.labels[index]).trim().toLowerCase()===label.toLowerCase()))throw Error('Thứ tự nhãn metadata không khớp ánh xạ đã xác nhận. Vui lòng kiểm tra lại mô hình.');
+  $('model-status').textContent='Bước 3/4: Đang kiểm tra model.json…';
+  await getJson('model.json');
+  $('model-status').textContent='Bước 4/4: Đang tải trọng số và khởi tạo mô hình…';
   await tf.ready();
   const loaded=await tmImage.load(base+'model.json',base+'metadata.json');
   if(loaded.getTotalClasses()!==metadata.labels.length)throw Error('Số lớp mô hình không khớp metadata.');
   model=loaded;
   modelUsesDeclaredClassOrder=isConfirmedModel;
   if(imageReady)$('image-status').textContent='Ảnh và mô hình đã sẵn sàng. Bấm “Chẩn đoán cây trồng” để phân tích.';
-  $('model-state').textContent='ĐÃ KẾT NỐI';const usesGeneric=metadata.labels.every(label=>/^class\s*[1-4]$/i.test(label));$('model-status').textContent='Mô hình sẵn sàng · 4 lớp. '+(modelUsesDeclaredClassOrder?'Đã áp dụng ánh xạ đã xác nhận: Class 1 thán thư · Class 2 đốm mắt cua · Class 3 gỉ sắt · Class 4 lá khỏe. ':'Tên lớp được đọc từ metadata mô hình. ')+'Mỗi lần tải ảnh mới sẽ tạo một kết quả phân tích riêng.';
- }catch(error){model=null;$('model-state').textContent='CẦN URL MÔ HÌNH';$('model-settings').open=true;$('model-status').textContent='Không thể tải mô hình. '+(error.name==='AbortError'?'Kết nối quá thời gian chờ. ': '')+(error.message||'Kiểm tra URL, Internet và quyền truy cập công khai của model.json, metadata.json cùng tệp trọng số.');}
+  $('model-state').textContent='ĐÃ KẾT NỐI';const usesGeneric=metadata.labels.every(label=>/^class\s*[1-7]$/i.test(label));$('model-status').textContent='Mô hình sẵn sàng · 7 lớp. '+(modelUsesDeclaredClassOrder?'Đã áp dụng ánh xạ 7 lớp: Class 1 thán thư · Class 2 đốm mắt cua · Class 3 gỉ sắt · Class 4 lá khỏe · Class 5 nấm hồng · Class 6 thối rễ tơ · Class 7 lở cổ rễ. ':'Tên lớp được đọc từ metadata mô hình. ')+'Mỗi lần tải ảnh mới sẽ tạo một kết quả phân tích riêng.';
+ }catch(error){model=null;$('model-state').textContent='CHƯA KẾT NỐI';$('model-settings').open=true;$('model-status').textContent='KẾT NỐI THẤT BẠI: '+(error.message||'Lỗi không xác định.')+' Kiểm tra Internet, URL và quyền truy cập công khai của mô hình.';}
  finally{connecting=false;$('connect').disabled=false;updateAnalyze();}
 }
 async function fetchWeather(){
@@ -254,8 +357,12 @@ function renderRecommendations(top){
   if(weather.temperatureMin<18)paragraph('Dự báo có nơi hoặc thời điểm xuống dưới 18 °C: theo dõi cây sau đêm mát/lạnh, tránh tưới muộn khiến vùng gốc ẩm kéo dài và bảo đảm thoát nước.');
   if(weather.temperatureMax<30&&weather.temperatureMin>=18)paragraph('Khoảng nhiệt độ dự báo tương đối ôn hòa: duy trì chăm sóc theo độ ẩm đất thực tế, quan sát cây vào buổi sáng và sau mưa.');
  }
- if(topProfile)paragraph('Lưu ý theo nhóm '+topProfile.name+': '+topProfile.weather);
- paragraph('Không suy ra thời điểm phun thuốc từ riêng nhiệt độ/độ ẩm. Cần kiểm tra thêm mưa, gió, tình trạng cây, xác nhận đúng bệnh và tuân thủ nhãn sản phẩm được phép sử dụng.');
+ if(topProfile && !uncertain(lastPredictions||[])) {
+  paragraph('Lưu ý tham khảo cho nhóm '+topProfile.name+': '+topProfile.weather);
+ } else if(topProfile) {
+  paragraph('Chưa cá thể hóa khuyến nghị theo một bệnh cụ thể vì hai lớp đầu chưa tách biệt rõ. Trước mắt chỉ kiểm tra hai mặt lá, độ ẩm đất, thoát nước và độ thông thoáng của tán; chưa xử lý đặc trị.');
+ }
+ paragraph('Dự báo thời tiết chỉ phản ánh khu vực đại diện, không đo vi khí hậu trong vườn. Không suy ra thời điểm phun thuốc từ riêng nhiệt độ/độ ẩm. Cần xác minh triệu chứng, kiểm tra mưa và gió, đồng thời tuân thủ nhãn sản phẩm được phép sử dụng.');
 }
 function renderDiagnosis(predictions){
  const top=predictions[0], runner=predictions[1];
@@ -271,25 +378,30 @@ function renderDiagnosis(predictions){
   }else add(items);
  };
  const profile=profileFor(top.className);
+ add('PHẦN A — PHÂN TÍCH ẢNH BẰNG AI');
  add('Ảnh được phân tích: '+$('file-name').textContent+' · '+$('preview').naturalWidth+' × '+$('preview').naturalHeight+' px · '+new Date().toLocaleString('vi-VN')+'.');
- add('Lớp đứng đầu: '+labelFor(top.className)+' · điểm mô hình '+(score*100).toFixed(1)+'%. Đây là điểm so sánh giữa các lớp mà mô hình đã học, không phải xác suất cây thật sự mắc bệnh.');
+ add('Lớp đứng đầu: '+labelFor(top.className)+' · điểm đầu ra '+(score*100).toFixed(1)+'%. Đây là điểm số nội bộ của bộ phân loại, chưa được hiệu chuẩn thành xác suất mắc bệnh và không thể hiểu là tỷ lệ cây mắc bệnh.');
  if(runner)add('Lớp đứng thứ hai: '+labelFor(runner.className)+' · '+(runner.probability*100).toFixed(1)+'%. Khoảng cách giữa hai lớp đầu: '+(gap*100).toFixed(1)+' điểm phần trăm.');
  if(score>=.85&&gap>=.20)add('Cách đọc kết quả: mô hình nghiêng khá rõ về lớp đứng đầu trong phạm vi các lớp đã học. Vẫn cần đối chiếu triệu chứng trên cây trước khi kết luận.');
  else if(score>=.70&&gap>=.15)add('Cách đọc kết quả: mô hình có xu hướng nghiêng về lớp đứng đầu, nhưng mức phân biệt chưa thật mạnh. Nên kiểm tra dấu hiệu đặc trưng và chụp thêm ảnh.');
  else add('Cách đọc kết quả: mô hình chưa phân biệt đủ rõ giữa các lớp. Hãy coi đây là gợi ý sơ bộ, chưa dùng để quyết định xử lý đặc trị.');
  add('Lưu ý phạm vi: mô hình phân loại toàn bộ bức ảnh; ứng dụng không tự khoanh vùng vết bệnh, đếm tổn thương hay xác định mức độ nặng. Các dấu hiệu bên dưới là danh sách để bạn kiểm tra ngoài vườn, không phải những gì AI đã nhìn thấy chắc chắn.');
- add('Phạm vi dữ liệu huấn luyện: mô hình hiện chỉ có 4 lớp thán thư, đốm mắt cua, gỉ sắt và lá khỏe. Mô hình chưa có lớp riêng cho quả, cành, sâu hại hoặc bệnh khác; nếu ảnh không phải lá cà phê, kết quả có thể bị ép vào một trong 4 lớp và không đáng tin cậy.');
+ add('Phạm vi dữ liệu huấn luyện: mô hình có 7 lớp đã khai báo gồm thán thư, đốm mắt cua, gỉ sắt, lá khỏe, nấm hồng, thối rễ tơ và lở cổ rễ. Mô hình vẫn có thể ép ảnh ngoài phạm vi hoặc ảnh không đúng bộ phận vào một trong 7 lớp; kết quả khi đó không đáng tin cậy. Mô hình phân loại toàn ảnh, không khoanh vùng tổn thương, không đếm vết bệnh và chưa đánh giá mức độ nặng.');
  if(profile){
-  section('1. Dấu hiệu thường gặp cần đối chiếu',profile.visual);
-  section('2. Kiểm tra thêm ngay tại vườn',profile.verify);
-  section('3. Nguyên nhân hoặc yếu tố liên quan có thể có',profile.factors);
-  section('4. Việc nên làm trước mắt',profile.actions);
-  section('5. Theo dõi và ghi nhận',profile.follow);
-  section('6. Khi nào cần cán bộ kỹ thuật kiểm tra',profile.escalate);
-  section('7. Điều không nên làm',profile.avoid);
- }else{
-  section('Phân tích chưa đủ để gọi tên bệnh','Tên lớp của mô hình chưa khớp với bộ hướng dẫn bệnh cà phê. Chưa thể đưa ra lời khuyên đặc hiệu một cách có trách nhiệm. Hãy kiểm tra tên các lớp trong Teachable Machine và cung cấp bảng ghép chính xác giữa nhãn với bệnh.');
-  section('Kiểm tra tạm thời tại vườn',['Chụp cả mặt trên và mặt dưới lá dưới ánh sáng tự nhiên.','Ghi hình dạng, màu sắc, vị trí và số lượng đốm; kiểm tra thêm cành, quả và các cây lân cận.','Không dùng thuốc hoặc thay đổi phân bón chỉ dựa trên nhãn Class chưa được xác định.']);
+  section('PHẦN B — ĐỐI CHIẾU VÀ CHẨN ĐOÁN CHUYÊN MÔN', 'Phần này không phải kết quả AI nhìn thấy trực tiếp. Đây là hướng dẫn đối chiếu triệu chứng thực tế theo lớp mô hình đứng đầu; chỉ kết luận sau khi kiểm tra đúng bộ phận cây.');
+  if(uncertain(predictions))section('Trạng thái kết quả','Mô hình chưa phân biệt rõ giữa các lớp. Nội dung dưới đây là hướng dẫn đối chiếu cho nhóm đứng đầu, không phải kết luận bệnh; hãy so sánh thêm lớp đứng thứ hai và xác minh tại vườn.');
+  if(profile.photoLimit)section('Giới hạn chẩn đoán qua ảnh',profile.photoLimit);
+  section('1. Tác nhân gây bệnh có thể liên quan',profile.pathogen);
+  section('2. Bộ phận cây thường bị ảnh hưởng',profile.affected);
+  section('3. Dấu hiệu nhận biết cần đối chiếu',profile.visual);
+  section('4. Quy trình kiểm tra xác minh tại vườn',profile.verify);
+  section('5. Điều kiện và yếu tố nguy cơ',profile.factors);
+  section('6. Ảnh hưởng tiềm tàng đến cây',profile.impact);
+  section('7. Chẩn đoán phân biệt – những trường hợp dễ nhầm',profile.differential);
+  section('8. Quản lý tổng hợp trước mắt',profile.actions);
+  section('9. Theo dõi và ghi nhận diễn biến',profile.follow);
+  section('10. Khi nào cần cán bộ kỹ thuật kiểm tra',profile.escalate);
+  section('11. Những điều không nên làm',profile.avoid);
  }
  if(runner){
   const secondProfile=profileFor(runner.className);
@@ -297,7 +409,7 @@ function renderDiagnosis(predictions){
    section('8. Khả năng gần thứ hai cần loại trừ',secondProfile.name+' cũng có điểm mô hình đáng chú ý ('+(runner.probability*100).toFixed(1)+'%). '+secondProfile.overview+' Dấu hiệu để đối chiếu: '+secondProfile.visual.join(' '));
   }
  }
- add('Quy tắc nhắc chụp lại của ứng dụng: điểm lớp đầu dưới 70% hoặc chênh lệch hai lớp đầu dưới 15 điểm phần trăm. Đây là ngưỡng hỗ trợ thao tác, chưa được hiệu chuẩn bằng một bộ ảnh kiểm định độc lập.');
+ add('Ngưỡng sàng lọc hiện tại: nhắc thận trọng khi điểm lớp đầu dưới 70% hoặc khoảng cách hai lớp đầu dưới 15 điểm phần trăm. Đây chỉ là ngưỡng vận hành tạm thời do ứng dụng đặt ra, chưa được xác lập bằng nghiên cứu hay bộ ảnh kiểm định độc lập; không phải ngưỡng khoa học để xác nhận/loại trừ bệnh.');
 }
 async function analyze(){
  if(!model||!imageReady||busy)return;busy=true;updateAnalyze();$('file').disabled=true;$('capture').disabled=true;$('connect').disabled=true;clearResults();$('results').setAttribute('aria-busy','true');$('empty-result').querySelector('strong').textContent='Đang phân tích ảnh…';$('result-tag').textContent='ĐANG PHÂN TÍCH';$('image-status').textContent='Đang phân tích ảnh trên thiết bị…';
@@ -326,7 +438,7 @@ $('share-modal').onclick=event=>{if(event.target===$('share-modal'))$('share-mod
 $('copy-public-url').onclick=async()=>{const url=currentPublicURL();if(!url){$('share-status').textContent='Chưa có đường link công khai để sao chép. Hãy triển khai lên Netlify trước.';return;}try{await navigator.clipboard.writeText(url);$('share-status').textContent='Đã sao chép đường link website.';}catch(error){$('share-status').textContent='Trình duyệt chặn sao chép tự động. Bạn hãy sao chép đường link đang hiển thị phía trên.';}};
 $('download-qr').onclick=()=>{const canvas=$('qr-code').querySelector('canvas');if(!canvas){$('share-status').textContent='Chưa có ảnh QR để tải.';return;}const link=document.createElement('a');link.href=canvas.toDataURL('image/png');link.download='AgriSmart-Lam-Dong-QR.png';link.click();};
 $('download').onclick=async()=>{try{const response=await fetch(location.href,{cache:'no-store'});if(!response.ok)throw Error('download');const html=await response.text();const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='index.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){$('image-status').textContent='Không thể tải tệp tự động. Dùng chức năng Lưu trang của trình duyệt để lưu index.html.';}};
-window.addEventListener('DOMContentLoaded',()=>{connectModel();fetchWeather();});
+window.addEventListener('DOMContentLoaded',()=>{fetchWeather();connectModel();});
 </script>
 </body>
 </html>

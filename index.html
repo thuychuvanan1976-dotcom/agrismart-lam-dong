@@ -35,7 +35,7 @@ a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,summary
 <div class="weather-meta"><span id="weather-status" role="status">Dự báo tự động từ Open-Meteo · Lâm Đồng</span><button class="text-button" id="refresh-weather">↻ Cập nhật</button></div>
 <div class="workspace" id="diagnosis"><section class="card"><div class="card-head"><h2 class="section-title"><span class="number">01</span>Hình ảnh cây trồng</h2><span class="tag">PHÂN TÍCH BẰNG AI</span></div><div class="upload-body"><div class="dropzone" id="dropzone"><div class="empty-upload"><svg class="plant-art" viewBox="0 0 160 130" aria-hidden="true"><ellipse cx="80" cy="118" rx="52" ry="6" fill="#e9eede"/><path d="M79 112V45" stroke="#6b854b" stroke-width="3"/><path d="M79 82C40 88 31 60 30 45c30-2 48 12 49 37Z" fill="#ceddb1"/><path d="M80 65c-3-30 15-48 42-48 0 28-16 47-42 48Z" fill="#8aa566"/><path d="m80 83-32-23m32 5 28-34" stroke="#608044" stroke-width="1.5"/><path d="M19 36V20h17m89 0h17v16M19 91v16h17m89 0h17V91" fill="none" stroke="#b7c79f" stroke-width="1.5"/><circle cx="131" cy="70" r="3" fill="#c4d59f"/></svg><br><strong>Thêm ảnh lá cà phê cần kiểm tra</strong><p>Kéo thả ảnh vào đây hoặc chọn từ thiết bị</p><p>JPG, PNG, WebP · Tối đa 15 MB</p></div><img id="preview" alt="Ảnh cây trồng đã chọn để phân tích"></div><div class="file-name hidden" id="file-name"></div><div class="upload-actions"><label class="button file-picker" id="choose"><input type="file" id="file" accept="image/*" aria-label="Tải ảnh lên"><svg aria-hidden="true"><use href="#upload"/></svg>Tải ảnh lên</label><label class="button file-picker" id="take-photo"><input type="file" id="capture" accept="image/*" capture="environment" aria-label="Chụp ảnh"><svg aria-hidden="true"><use href="#camera"/></svg>Chụp ảnh</label></div><button class="button primary" id="analyze" disabled aria-disabled="true" title="Hãy tải ảnh lên và chờ mô hình AI kết nối"><svg><use href="#leaf"/></svg>Chẩn đoán cây trồng <span aria-hidden="true">→</span></button><p class="hint">ⓘ Chỉ dùng ảnh lá cà phê. Đặt một lá ở giữa khung hình, đủ sáng, rõ nét; chụp thêm mặt dưới khi cần.</p><p class="status" id="image-status" role="status" aria-live="polite"></p></div></section>
 <section class="card"><div class="card-head"><h2 class="section-title"><span class="number">02</span>Bảng kết quả chẩn đoán</h2><span class="tag" id="result-tag">CHỜ HÌNH ẢNH</span></div><div class="result-body"><div id="empty-result" class="empty-result"><svg class="scan-icon"><use href="#leaf"/></svg><strong>Lắng nghe điều chiếc lá muốn nói</strong><p>Tải ảnh và chọn “Chẩn đoán cây trồng” để xem kết quả phân tích tại đây.</p></div><div id="results" class="hidden" aria-live="polite"><div class="result-summary"><small>LỚP MÔ HÌNH XẾP CAO NHẤT</small><h3 id="disease"></h3><div class="confidence"><span>Điểm phân loại (không phải xác suất mắc bệnh)</span><strong id="confidence"></strong></div><div class="bar" id="confidence-bar" role="progressbar" aria-label="Độ tin cậy" aria-valuemin="0" aria-valuemax="100"><span></span></div></div><div class="recommendation"><h4>Diễn giải kết quả</h4><div id="diagnosis-details"></div></div><table><thead><tr><th>Tình trạng lá cà phê</th><th>Điểm mô hình</th></tr></thead><tbody id="probabilities"></tbody></table><div class="recommendation"><h4>Kiểm tra thực tế trên cây / lá</h4><p>Quan sát cả hai mặt lá: đốm vàng hoặc nâu, lớp bột màu cam, vết cháy mép, lỗ thủng và côn trùng. Ghi lại vị trí xuất hiện trên lá non hay lá già.</p><p>Chụp thêm toàn cây và mặt dưới lá; theo dõi vết bệnh có lan rộng, lá có rụng hoặc cành có héo. Đây là các bước cần đối chiếu ngoài ảnh, không phải triệu chứng AI đã phát hiện.</p></div><div class="recommendation"><h4>Gợi ý chăm sóc theo thời tiết</h4><div id="recommendations"></div></div></div><div class="notice"><strong>Lưu ý nhà vườn:</strong> Kết quả AI mang tính tham khảo, không thay thế đánh giá của cán bộ kỹ thuật nông nghiệp. Xác minh bệnh trước khi sử dụng thuốc bảo vệ thực vật.</div></div></section></div>
-<details class="model" id="model-settings"><summary>Kết nối mô hình Teachable Machine <span class="model-state" id="model-state">CHƯA KẾT NỐI</span></summary><p>Đường dẫn mô hình cần chứa model.json, metadata.json và các tệp trọng số công khai. Ứng dụng đọc tên lớp trực tiếp từ mô hình. Nếu mô hình dùng nhãn Class 1, Class 2…, ứng dụng đang dùng quy ước Class 1 = thán thư; Class 2 = đốm mắt cua; Class 3 = gỉ sắt; Class 4 = lá khỏe như trong mã dự án. Bạn cần xác nhận thứ tự lớp này trùng với thứ tự đã huấn luyện trong Teachable Machine; nếu khác, không dùng phần tư vấn bệnh tương ứng cho đến khi sửa bảng ghép.</p><div class="model-row"><input id="model-url" type="url" value="https://teachablemachine.withgoogle.com/models/GCO5vPEwu/" aria-label="URL mô hình Teachable Machine" placeholder="https://teachablemachine.withgoogle.com/models/…/"><button id="connect" class="button">Kết nối mô hình</button></div><p class="status" role="status" id="model-status">Đang tải mô hình từ URL được cung cấp…</p></details>
+<details class="model" id="model-settings"><summary>Kết nối mô hình Teachable Machine <span class="model-state" id="model-state">CHƯA KẾT NỐI</span></summary><p>Đường dẫn mô hình cần chứa model.json, metadata.json và các tệp trọng số công khai. Ứng dụng đọc tên lớp trực tiếp từ mô hình. Nếu mô hình dùng nhãn Class 1, Class 2…, ứng dụng đang dùng quy ước Class 1 = thán thư; Class 2 = đốm mắt cua; Class 3 = gỉ sắt; Class 4 = lá khỏe như trong mã dự án. Bạn cần xác nhận thứ tự lớp này trùng với thứ tự đã huấn luyện trong Teachable Machine; nếu khác, không dùng phần tư vấn bệnh tương ứng cho đến khi sửa bảng ghép.</p><div class="model-row"><input id="model-url" type="url" value="https://teachablemachine.withgoogle.com/models/bP3vftGDQ/" aria-label="URL mô hình Teachable Machine" placeholder="https://teachablemachine.withgoogle.com/models/…/"><button id="connect" class="button">Kết nối mô hình</button></div><p class="status" role="status" id="model-status">Đang tải mô hình từ URL được cung cấp…</p></details>
 <section class="guide"><div class="guide-mark">↗</div><div><h3>Một bức ảnh tốt, một khởi đầu chính xác.</h3><p>Chụp cả mặt trên và mặt dưới của lá khi cần. Tránh ánh sáng gắt và phông nền nhiều chi tiết.<br>Ảnh chỉ được xử lý trên thiết bị của bạn, không được gửi lên máy chủ.</p></div></section><footer><span>© <span id="year"></span> AgriSmart Lâm Đồng · Vì những mùa xanh</span><span>TensorFlow.js & Teachable Machine · Thời tiết từ Open-Meteo</span></footer>
 </main></div>
 <script>
@@ -43,7 +43,7 @@ a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,summary
 const siteName='AgriSmart Lâm Đồng';
 const siteDescription='Nhận diện bệnh cây từ hình ảnh và tham khảo cách chăm sóc theo dự báo thời tiết Lâm Đồng.';
 const $=id=>document.getElementById(id);
-const COFFEE_MODEL_URL='https://teachablemachine.withgoogle.com/models/GCO5vPEwu/';
+const COFFEE_MODEL_URL='https://teachablemachine.withgoogle.com/models/bP3vftGDQ/';
 const coffeeProfiles={
  'Class 1':{
   name:'Bệnh thán thư',
@@ -96,13 +96,14 @@ const coffeeProfiles={
 };
 let selectionVersion=0, modelUsesDeclaredClassOrder=false;
 function normalizeLabel(label){
- return String(label||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/đ/g,'d').trim();
+ return String(label||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/đ/g,'d').trim();
 }
 function profileFor(label){
- const value=normalizeLabel(label);
- // The uploaded project file defines this four-class order for the supplied coffee model.
+ const raw=String(label||'').trim();
+ const value=normalizeLabel(raw);
+ // The supplied model uses generic labels; apply the user's confirmed order only to this model.
  if(modelUsesDeclaredClassOrder){
-  const match=String(label||'').trim().match(/^class\\s*([1-4])$/i);
+  const match=raw.match(/^class\s*([1-4])$/i);
   if(match)return coffeeProfiles['Class '+match[1]];
  }
  if(value.includes('than thu')||value.includes('anthracnose'))return coffeeProfiles['Class 1'];
@@ -140,10 +141,18 @@ async function connectModel(){
    try{response=await fetch(base+'metadata.json',{signal:controller.signal});}
    finally{clearTimeout(timeout);}
   if(!response.ok)throw Error('Không tìm thấy metadata.json tại URL này.');
-  const metadata=await response.json();if(!Array.isArray(metadata.labels)||!metadata.labels.length)throw Error('Metadata không phải mô hình phân loại ảnh Teachable Machine.');
-  await tf.ready();const loaded=await tmImage.load(base+'model.json',base+'metadata.json');if(loaded.getTotalClasses()!==metadata.labels.length)throw Error('Số lớp mô hình không khớp metadata.');model=loaded;modelUsesDeclaredClassOrder=(base===COFFEE_MODEL_URL&&metadata.labels.length===4&&metadata.labels.every(label=>/^class\\s*[1-4]$/i.test(label)));
+  const metadata=await response.json();
+  if(!Array.isArray(metadata.labels)||metadata.labels.length!==4)throw Error('Mô hình này cần có đúng 4 lớp như bộ dữ liệu AgriSmart.');
+  const expectedLabels=['Class 1','Class 2','Class 3','Class 4'];
+  const isConfirmedModel=base===COFFEE_MODEL_URL;
+  if(isConfirmedModel&&!expectedLabels.every((label,index)=>String(metadata.labels[index]).trim().toLowerCase()===label.toLowerCase()))throw Error('Thứ tự nhãn metadata không khớp ánh xạ đã xác nhận. Vui lòng kiểm tra lại mô hình.');
+  await tf.ready();
+  const loaded=await tmImage.load(base+'model.json',base+'metadata.json');
+  if(loaded.getTotalClasses()!==metadata.labels.length)throw Error('Số lớp mô hình không khớp metadata.');
+  model=loaded;
+  modelUsesDeclaredClassOrder=isConfirmedModel;
   if(imageReady)$('image-status').textContent='Ảnh và mô hình đã sẵn sàng. Bấm “Chẩn đoán cây trồng” để phân tích.';
-  $('model-state').textContent='ĐÃ KẾT NỐI';const usesGeneric=metadata.labels.every(label=>/^class\s*[1-4]$/i.test(label));$('model-status').textContent='Mô hình sẵn sàng · '+model.getTotalClasses()+' phân lớp. '+(usesGeneric?'Ứng dụng đang ghép Class 1–4 theo quy ước trong mã; hãy xác nhận thứ tự này trùng với thứ tự lớp huấn luyện. ':'Tên lớp được đọc từ metadata mô hình. ')+'Chọn ảnh để bắt đầu.';
+  $('model-state').textContent='ĐÃ KẾT NỐI';const usesGeneric=metadata.labels.every(label=>/^class\s*[1-4]$/i.test(label));$('model-status').textContent='Mô hình sẵn sàng · 4 lớp. '+(modelUsesDeclaredClassOrder?'Đã áp dụng ánh xạ đã xác nhận: Class 1 thán thư · Class 2 đốm mắt cua · Class 3 gỉ sắt · Class 4 lá khỏe. ':'Tên lớp được đọc từ metadata mô hình. ')+'Mỗi lần tải ảnh mới sẽ tạo một kết quả phân tích riêng.';
  }catch(error){model=null;$('model-state').textContent='CẦN URL MÔ HÌNH';$('model-settings').open=true;$('model-status').textContent='Không thể tải mô hình. '+(error.name==='AbortError'?'Kết nối quá thời gian chờ. ': '')+(error.message||'Kiểm tra URL, Internet và quyền truy cập công khai của model.json, metadata.json cùng tệp trọng số.');}
  finally{connecting=false;$('connect').disabled=false;updateAnalyze();}
 }
@@ -215,6 +224,7 @@ async function selectFile(file){
  try{
   const candidate=new Image();candidate.src=nextURL;await candidate.decode();
   if(version!==selectionVersion){URL.revokeObjectURL(nextURL);return;}
+  if(candidate.naturalWidth<224||candidate.naturalHeight<224){URL.revokeObjectURL(nextURL);$('image-status').textContent='Ảnh có độ phân giải quá thấp (cần tối thiểu 224 × 224 pixel). Hãy chọn ảnh rõ hơn.';return;}
   $('preview').src=nextURL;await $('preview').decode();
   if(version!==selectionVersion){URL.revokeObjectURL(nextURL);return;}
   if(objectURL)URL.revokeObjectURL(objectURL);objectURL=nextURL;imageReady=true;
@@ -261,13 +271,14 @@ function renderDiagnosis(predictions){
   }else add(items);
  };
  const profile=profileFor(top.className);
- add('Ảnh được phân tích: '+$('file-name').textContent+' · '+new Date().toLocaleString('vi-VN')+'.');
+ add('Ảnh được phân tích: '+$('file-name').textContent+' · '+$('preview').naturalWidth+' × '+$('preview').naturalHeight+' px · '+new Date().toLocaleString('vi-VN')+'.');
  add('Lớp đứng đầu: '+labelFor(top.className)+' · điểm mô hình '+(score*100).toFixed(1)+'%. Đây là điểm so sánh giữa các lớp mà mô hình đã học, không phải xác suất cây thật sự mắc bệnh.');
  if(runner)add('Lớp đứng thứ hai: '+labelFor(runner.className)+' · '+(runner.probability*100).toFixed(1)+'%. Khoảng cách giữa hai lớp đầu: '+(gap*100).toFixed(1)+' điểm phần trăm.');
  if(score>=.85&&gap>=.20)add('Cách đọc kết quả: mô hình nghiêng khá rõ về lớp đứng đầu trong phạm vi các lớp đã học. Vẫn cần đối chiếu triệu chứng trên cây trước khi kết luận.');
  else if(score>=.70&&gap>=.15)add('Cách đọc kết quả: mô hình có xu hướng nghiêng về lớp đứng đầu, nhưng mức phân biệt chưa thật mạnh. Nên kiểm tra dấu hiệu đặc trưng và chụp thêm ảnh.');
  else add('Cách đọc kết quả: mô hình chưa phân biệt đủ rõ giữa các lớp. Hãy coi đây là gợi ý sơ bộ, chưa dùng để quyết định xử lý đặc trị.');
  add('Lưu ý phạm vi: mô hình phân loại toàn bộ bức ảnh; ứng dụng không tự khoanh vùng vết bệnh, đếm tổn thương hay xác định mức độ nặng. Các dấu hiệu bên dưới là danh sách để bạn kiểm tra ngoài vườn, không phải những gì AI đã nhìn thấy chắc chắn.');
+ add('Phạm vi dữ liệu huấn luyện: mô hình hiện chỉ có 4 lớp thán thư, đốm mắt cua, gỉ sắt và lá khỏe. Mô hình chưa có lớp riêng cho quả, cành, sâu hại hoặc bệnh khác; nếu ảnh không phải lá cà phê, kết quả có thể bị ép vào một trong 4 lớp và không đáng tin cậy.');
  if(profile){
   section('1. Dấu hiệu thường gặp cần đối chiếu',profile.visual);
   section('2. Kiểm tra thêm ngay tại vườn',profile.verify);
@@ -290,7 +301,7 @@ function renderDiagnosis(predictions){
 }
 async function analyze(){
  if(!model||!imageReady||busy)return;busy=true;updateAnalyze();$('file').disabled=true;$('capture').disabled=true;$('connect').disabled=true;clearResults();$('results').setAttribute('aria-busy','true');$('empty-result').querySelector('strong').textContent='Đang phân tích ảnh…';$('result-tag').textContent='ĐANG PHÂN TÍCH';$('image-status').textContent='Đang phân tích ảnh trên thiết bị…';
- try{const predictions=await model.predict($('preview'));if(!predictions.length||predictions.some(p=>typeof p.className!=='string'||!Number.isFinite(p.probability)||p.probability<0||p.probability>1))throw Error('invalid prediction');predictions.sort((a,b)=>b.probability-a.probability);lastPredictions=predictions;const top=predictions[0],percent=(top.probability*100).toFixed(1);$('disease').textContent=(uncertain(predictions)?'Chưa rõ · ':'Gợi ý · ')+labelFor(top.className);$('confidence').textContent=percent+'%';$('confidence-bar').setAttribute('aria-valuenow',percent);$('confidence-bar').firstElementChild.style.width=percent+'%';$('probabilities').replaceChildren();for(const p of predictions){const row=document.createElement('tr'),name=document.createElement('td'),score=document.createElement('td'),wrap=document.createElement('div'),bar=document.createElement('div'),fill=document.createElement('span'),label=document.createElement('span');name.textContent=labelFor(p.className);wrap.className='score';bar.className='bar';fill.style.width=(p.probability*100)+'%';label.textContent=(p.probability*100).toFixed(1)+'%';bar.appendChild(fill);wrap.append(bar,label);score.appendChild(wrap);row.append(name,score);$('probabilities').appendChild(row);}renderDiagnosis(predictions);renderRecommendations(top);$('empty-result').classList.add('hidden');$('results').classList.remove('hidden');$('results').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});$('result-tag').textContent=uncertain(predictions)?'CẦN CHỤP LẠI':'ĐÃ PHÂN TÍCH';$('image-status').textContent='Đã phân tích xong. Bạn có thể chọn ảnh khác để tiếp tục.';}
+ try{const predictions=await model.predict($('preview'));if(!predictions.length||predictions.some(p=>typeof p.className!=='string'||!Number.isFinite(p.probability)||p.probability<0||p.probability>1))throw Error('invalid prediction');predictions.sort((a,b)=>b.probability-a.probability);lastPredictions=predictions;const top=predictions[0],percent=(top.probability*100).toFixed(1);$('disease').textContent=(uncertain(predictions)?'Chưa phân biệt rõ · ':'AI nghiêng về · ')+labelFor(top.className);$('confidence').textContent=percent+'%';$('confidence-bar').setAttribute('aria-valuenow',percent);$('confidence-bar').firstElementChild.style.width=percent+'%';$('probabilities').replaceChildren();for(const p of predictions){const row=document.createElement('tr'),name=document.createElement('td'),score=document.createElement('td'),wrap=document.createElement('div'),bar=document.createElement('div'),fill=document.createElement('span'),label=document.createElement('span');name.textContent=labelFor(p.className);wrap.className='score';bar.className='bar';fill.style.width=(p.probability*100)+'%';label.textContent=(p.probability*100).toFixed(1)+'%';bar.appendChild(fill);wrap.append(bar,label);score.appendChild(wrap);row.append(name,score);$('probabilities').appendChild(row);}renderDiagnosis(predictions);renderRecommendations(top);$('empty-result').classList.add('hidden');$('results').classList.remove('hidden');$('results').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});$('result-tag').textContent=uncertain(predictions)?'CẦN CHỤP LẠI':'ĐÃ PHÂN TÍCH';$('image-status').textContent='Đã phân tích xong. Bạn có thể chọn ảnh khác để tiếp tục.';}
  catch(error){$('result-tag').textContent='CHƯA CÓ KẾT QUẢ';$('image-status').textContent='Phân tích chưa thành công. Hãy thử ảnh JPG/PNG rõ nét; nếu vẫn lỗi, mở mục kết nối mô hình và kết nối lại.';}
  finally{$('results').setAttribute('aria-busy','false');$('empty-result').querySelector('strong').textContent='Lắng nghe điều chiếc lá muốn nói';busy=false;$('file').disabled=false;$('capture').disabled=false;$('connect').disabled=false;updateAnalyze();}
 }
